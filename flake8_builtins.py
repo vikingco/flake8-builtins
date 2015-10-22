@@ -30,10 +30,22 @@ BUILTINS = ('ArithmeticError', 'AssertionError', 'AttributeError', 'BaseExceptio
 class BuiltinsOverrideChecker(object):
     name = 'flake8-builtins'
     version = __version__
+    ignores = ()
 
     def __init__(self, tree, filename='(none)', builtins=None):
         self.tree = tree
         self.filename = (filename == 'stdin' and stdin) or filename
+
+    @classmethod
+    def add_options(cls, parser):
+        parser.add_option('--builtins-exclude', default=None, action='store', type='str',
+                          help='Comma-separated list of builtin overrides to exclude')
+        parser.config_options.append('builtins-exclude')
+
+    @classmethod
+    def parse_options(cls, options):
+        if options.builtins_exclude is not None:
+            cls.ignores = options.builtins_exclude.split(',')
 
     def run(self):
         # Get lines to ignore
@@ -48,7 +60,7 @@ class BuiltinsOverrideChecker(object):
         for node in ast.walk(self.tree):
             if isinstance(node, ast.Assign) and hasattr(node, 'targets') and node.lineno not in noqa:
                 for target in node.targets:
-                    if hasattr(target, 'id') and target.id in BUILTINS:
+                    if hasattr(target, 'id') and target.id in BUILTINS and target.id not in self.ignores:
                         errors.append({
                             "message": '{0} {1}: {2}'.format(BUILTINS_ERROR_CODE, BUILTINS_ERROR_MESSAGE, target.id),
                             "line": node.lineno,
