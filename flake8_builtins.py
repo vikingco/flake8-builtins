@@ -3,7 +3,7 @@ import tokenize
 
 from sys import stdin
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 BUILTINS_ERROR_CODE = 'T002'
 BUILTINS_ERROR_MESSAGE = 'override of Python builtin found'
@@ -37,13 +37,12 @@ class BuiltinsOverrideChecker(object):
         self.filename = (filename == 'stdin' and stdin) or filename
 
     @classmethod
-    def add_options(cls, parser):
+    def register_options(cls, parser):
         parser.add_option('--builtins-exclude', default=None, action='store', type='str',
                           help='Comma-separated list of builtin overrides to exclude')
-        parser.config_options.append('builtins-exclude')
 
     @classmethod
-    def parse_options(cls, options):
+    def provide_options(cls, options):
         if options.builtins_exclude is not None:
             cls.ignores = options.builtins_exclude.split(',')
 
