@@ -3,7 +3,7 @@ import tokenize
 
 from sys import stdin
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 BUILTINS_ERROR_CODE = 'T002'
 BUILTINS_ERROR_MESSAGE = 'override of Python builtin found'

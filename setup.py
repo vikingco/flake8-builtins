@@ -19,7 +19,7 @@ def get_long_description():
 install_requires = ['flake8']
 
 setup(
-    name='flake8-builtins',
+    name='flake8-builtins-unleashed',
     version=get_version(),
     description="builtin override checker plugin for flake8",
     long_description=get_long_description(),
