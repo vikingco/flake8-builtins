@@ -9,16 +9,16 @@ This module provides a plugin for ``flake8``, the Python code checker.
 Installation
 ------------
 
-You can install or upgrade ``flake8-builtins`` with these commands::
+You can install or upgrade ``flake8-builtins-unleashed`` with these commands::
 
-  $ pip install flake8-builtins
-  $ pip install --upgrade flake8-builtins
+  $ pip install flake8-builtins-unleashed
+  $ pip install --upgrade flake8-builtins-unleashed
 
 
 Plugin for Flake8
 -----------------
 
-When both ``flake8`` and ``flake8-builtins`` are installed, the plugin is
+When both ``flake8`` and ``flake8-builtins-unleashed`` are installed, the plugin is
 available in ``flake8``::
 
     $ flake8 --version
