@@ -3,7 +3,7 @@ import tokenize
 
 from sys import stdin
 
-__version__ = '1.2'
+__version__ = '1.3'
 
 BUILTINS_ERROR_CODE = 'T002'
 BUILTINS_ERROR_MESSAGE = 'override of Python builtin found'
@@ -37,14 +37,14 @@ class BuiltinsOverrideChecker(object):
         self.filename = (filename == 'stdin' and stdin) or filename
 
     @classmethod
-    def register_options(cls, parser):
-        parser.add_option('--builtins-exclude', default=None, action='store', type='str',
-                          help='Comma-separated list of builtin overrides to exclude')
+    def add_options(cls, parser):
+        parser.add_option('--builtins-exclude', default=None, action='store', type='str', parse_from_config=True,
+                          comma_separated_list=True, help='Comma-separated list of builtin overrides to exclude')
 
     @classmethod
-    def provide_options(cls, options):
+    def parse_options(cls, options):
         if options.builtins_exclude is not None:
-            cls.ignores = options.builtins_exclude.split(',')
+            cls.ignores = options.builtins_exclude
 
     def run(self):
         # Get lines to ignore
@@ -64,6 +64,14 @@ class BuiltinsOverrideChecker(object):
                             "message": '{0} {1}: {2}'.format(BUILTINS_ERROR_CODE, BUILTINS_ERROR_MESSAGE, target.id),
                             "line": node.lineno,
                             "col": node.col_offset
+                        })
+            elif isinstance(node, ast.arguments):
+                for arg in node.args:
+                    if arg.id in BUILTINS and arg.id not in self.ignores:
+                        errors.append({
+                            "message": '{0} {1}: {2}'.format(BUILTINS_ERROR_CODE, BUILTINS_ERROR_MESSAGE, arg.id),
+                            "line": arg.lineno,
+                            "col": arg.col_offset
                         })
 
         # Yield the found errors
