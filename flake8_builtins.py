@@ -3,7 +3,7 @@ import tokenize
 
 from sys import stdin
 
-__version__ = '1.3'
+__version__ = '1.3.1'
 
 BUILTINS_ERROR_CODE = 'T002'
 BUILTINS_ERROR_MESSAGE = 'override of Python builtin found'
@@ -67,7 +67,7 @@ class BuiltinsOverrideChecker(object):
                         })
             elif isinstance(node, ast.arguments):
                 for arg in node.args:
-                    if arg.id in BUILTINS and arg.id not in self.ignores:
+                    if hasattr(arg, 'id') and arg.id in BUILTINS and arg.id not in self.ignores:
                         errors.append({
                             "message": '{0} {1}: {2}'.format(BUILTINS_ERROR_CODE, BUILTINS_ERROR_MESSAGE, arg.id),
                             "line": arg.lineno,
